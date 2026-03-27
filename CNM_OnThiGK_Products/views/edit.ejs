@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa sản phẩm</title>
+    <style>
+        /* Thừa hưởng CSS từ trang Add để đồng bộ */
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 450px;
+            border-top: 6px solid #2196F3;
+        }
+        
+        h1 {
+            color: #1976D2;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+        }
+        
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            background: #fafafa;
+        }
+        
+        .current-img-box {
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        
+        #mainPreview {
+            max-width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        
+        button {
+            flex: 2;
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #1E88E5;
+        }
+        
+        .btn-back {
+            flex: 1;
+            background: #f1f1f1;
+            color: #333;
+            text-decoration: none;
+            text-align: center;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Sửa Sản Phẩm</h1>
+        <form action="/edit/<%= product.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Tên sản phẩm:</label>
+                <input type="text" name="name" value="<%= product.name %>" required>
+            </div>
+            <div class="form-group">
+                <label>Giá bán ($):</label>
+                <input type="number" name="price" value="<%= product.price %>" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+                <label>Số lượng tồn kho:</label>
+                <input type="number" name="unit_in_stock" value="<%= product.unit_in_stock %>" min="0" required>
+            </div>
+            <div class="form-group">
+                <label>Hình ảnh sản phẩm:</label>
+                <div class="current-img-box">
+                    <% if (product.url_image) { %>
+                        <img src="<%= product.url_image %>" id="mainPreview" alt="Product Image">
+                        <% } else { %>
+                            <div id="no-img-text" style="color:#999; padding:20px;">Chưa có ảnh</div>
+                            <img src="" id="mainPreview" style="display:none;">
+                            <% } %>
+                </div>
+                <input type="file" name="url_image" accept="image/*" onchange="previewEdit()">
+                <p style="font-size: 12px; color: #888; margin-top: 5px;">* Chọn ảnh mới nếu muốn thay đổi</p>
+            </div>
+            <div class="btn-group">
+                <button type="submit">Cập nhật</button>
+                <a href="/" class="btn-back">Hủy bỏ</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function previewEdit() {
+            const preview = document.getElementById('mainPreview');
+            const text = document.getElementById('no-img-text');
+            const file = document.querySelector('input[type=file]').files[0];
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                preview.src = reader.result;
+                preview.style.display = "inline-block";
+                if (text) text.style.display = "none";
+            }
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+
+</html>

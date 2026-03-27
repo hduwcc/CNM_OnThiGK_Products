@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Sản Phẩm</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f3;
+            margin: 0;
+            padding: 30px;
+            color: #333;
+        }
+        
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto 30px;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #2e7d32;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-add-main {
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
+        }
+        
+        .btn-add-main:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+        /* Grid hiển thị danh sách */
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* Style cho từng Card giống trong hình */
+        
+        .product-card {
+            background-color: #e8f5e9;
+            /* Màu xanh lá cực nhạt */
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .info-row {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            width: 100px;
+            color: #2e7d32;
+        }
+        
+        .info-value {
+            color: #444;
+        }
+        /* Hình ảnh sản phẩm */
+        
+        .product-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 15px 0;
+            background-color: #fff;
+            border: 1px solid #eee;
+        }
+        
+        .no-img {
+            width: 100%;
+            height: 180px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            margin: 15px 0;
+            border: 1px dashed #ccc;
+        }
+        /* Các nút bấm thao tác */
+        
+        .actions {
+            margin-top: auto;
+            display: flex;
+            gap: 15px;
+            padding-top: 10px;
+        }
+        
+        .actions a {
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1976D2;
+        }
+        
+        .actions a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #d32f2f;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0;
+            font-family: inherit;
+        }
+        
+        .btn-delete:hover {
+            text-decoration: underline;
+        }
+        /* Responsive */
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            .header-area {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header-area">
+        <h1>Danh Sách Sản Phẩm</h1>
+        <a href="/add" class="btn-add-main">+ Thêm sản phẩm mới</a>
+    </div>
+
+    <div class="product-grid">
+        <% products.forEach(product => { %>
+            <div class="product-card">
+                <div class="info-row">
+                    <span class="info-label">Sản phẩm:</span>
+                    <span class="info-value"><%= product.name %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Giá bán:</span>
+                    <span class="info-value">$<%= product.price %></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Tồn kho:</span>
+                    <span class="info-value"><%= product.unit_in_stock %> cái</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Trạng thái:</span>
+                    <span class="info-value" style="color: <%= product.unit_in_stock > 0 ? '#2e7d32' : '#d32f2f' %>;">
+                        <%= product.unit_in_stock > 0 ? 'Còn hàng' : 'Hết hàng' %>
+                    </span>
+                </div>
+
+                <% if (product.url_image) { %>
+                    <img src="<%= product.url_image %>" class="product-img" alt="<%= product.name %>">
+                    <% } else { %>
+                        <div class="no-img">Chưa có hình ảnh</div>
+                        <% } %>
+
+                            <div class="actions">
+                                <a href="/edit/<%= product.id %>">Chỉnh sửa</a>
+
+                                <form action="/delete/<%= product.id %>?_method=DELETE" method="POST" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')">
+                                    <button type="submit" class="btn-delete">Xóa sản phẩm</button>
+                                </form>
+                            </div>
+            </div>
+            <% }) %>
+    </div>
+
+</body>
+
+</html>
